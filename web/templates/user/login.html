@@ -19,7 +19,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">密码</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                            <input type="password" class="form-control" name='login_pwd' placeholder="Password">
                         </div>
                         <button type="submit" class="btn btn-primary block full-width m-b do-login">Submit</button>    
                     </div>
@@ -39,5 +39,5 @@
 {% endblock %}
 
 {% block js %}
-
+    <script src="{{ url_for('static',filename='js/user/login.js') }}"></script>
 {% endblock %}
