@@ -30,7 +30,7 @@ var user_reset_pwd_ops = {
                 data:{"old_password":old_password,"new_password":new_password},
                 dataType:"json",
                 success:function(resp){
-                    alert("重置密码成功")
+                    common_ops.alert("重置密码成功")
                     console.log(resp.msg)
                     btn_target.removeClass("disabled")
                 },

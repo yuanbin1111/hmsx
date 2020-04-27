@@ -4,7 +4,7 @@ from common.models.User import User
 from common.libs.user.UserService import UserService
 from common.libs.UrlManager import UrlManager
 from common.libs.Helper import ops_render
-from application import app
+from application import app,db
 
 import json
 
@@ -69,8 +69,86 @@ def logout():
 
 @router_user.route('/edit',methods=['GET','POST'])
 def edit():
-    return ops_render('/user/edit.html')
+    if request.method ==  'GET':
+        return ops_render('/user/edit.html')
+    #post:
+    resp = {
+        'code':200,
+        'msg':'编辑成功',
+        'data':{}
+    }
+
+    req = request.values
+    nickname = req['nickname'] if 'nickname' in req else ''
+    email = req['email'] if 'email' in req else ''
+
+    #校检
+    if nickname is  None or len(nickname) < 1:
+        resp['code'] = -1
+        resp['msg'] = '请输入符合规范的昵称'
+
+        return jsonify(resp)
+
+    if email is None or len(email) < 1:
+        resp['code'] = -1 
+        resp['msg'] = '请输入规范的邮箱'
+
+        return jsonify(resp)
+
+    #更新数据库
+    user_info = g.current_user
+    user_info.nickname = nickname
+    user_info.email = email
+
+    db.session.add(user_info)
+    db.session.commit()
+
+    return jsonify(resp)
+    # return ops_render('/user/edit.html')
 
 @router_user.route('/reset-pwd',methods=['GET','POST'])
 def resetPwd():
-    return ops_render('/user/reset_pwd.html')
+    if request.method == 'GET':
+        return ops_render('/user/reset_pwd.html')
+
+    #post
+    resp = {
+        'code':200,
+        'msg':'重置密码成功',
+        'data':{}
+    }
+
+    #缓存
+    req = request.values
+    old_password = req['old_password'] if 'old_password' in req else ''
+    new_password = req['new_password'] if 'new_password' in req else ''
+    
+    #校检
+    if old_password is None or len(old_password) < 6:
+        resp['code'] = -1
+        resp['msg'] = '请输入符合规范的原密码'
+        return jsonify(resp)
+
+    if new_password is None or len(new_password) < 6:
+        resp['code'] = -1
+        resp['msg'] = '请输入符合规范的新密码'
+        return jsonify(resp)
+
+    if new_password  == old_password:
+        resp['code'] = -1
+        resp['msg'] = '原密码与新密码不能相同'
+        return jsonify(resp)
+
+    #获取用户信息,修改密码生成新的加密后的密码
+    user_info = g.current_user
+    user_info.login_pwd = UserService.generatePwd(new_password,user_info.login_salt)
+    db.session.add(user_info)
+    db.session.commit()
+
+
+    #更新cookie中的旧密码
+    response = make_response(json.dumps(resp))
+    response.set_cookie(app.config['AUTH_COOKIE_NAME'],'%s@%s' % (UserService.generateAuthCode(user_info),user_info.uid),60*60*24*5)
+
+
+    return response
