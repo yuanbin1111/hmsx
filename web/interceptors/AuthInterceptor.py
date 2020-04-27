@@ -1,4 +1,4 @@
-from flask import request,redirect
+from flask import request,redirect,g
 
 from common.libs.UrlManager import UrlManager
 from common.models.User import User
@@ -20,6 +20,9 @@ def before_request():
         return
 
     user_info = check_login()
+    g.current_user = None
+    if user_info:
+        g.current_user = user_info
 
     #设置/user/login的忽略规则。要用正则表达式
     pattern = re.compile('%s'%'|'.join(ignore_urls))
