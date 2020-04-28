@@ -105,7 +105,9 @@ def set():
         model_user = user_info
     else:
         model_user = User()
+        # 插入格式化时间
         model_user.created_time = getCurrentDate()
+        #生成16位加密字符串
         model_user.login_salt = UserService.generateSalt()
 
     model_user.nickname = nickname

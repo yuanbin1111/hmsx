@@ -1,4 +1,4 @@
-import hashlib,base64
+import hashlib,base64,random,string
 
 class UserService():
     # 静态方法 生成密码(结合Pwd和salt)
@@ -11,6 +11,7 @@ class UserService():
         return m.hexdigest()
 
     
+    # 对Cookie中存储的信息进行加密
     @staticmethod
     def generateAuthCode(user_info=None):
         m = hashlib.md5()
@@ -18,3 +19,13 @@ class UserService():
         m.update(str.encode('utf-8'))
 
         return m.hexdigest()
+
+
+       # 生成16位的字符串，包含字母和数字
+    # string.ascii_letters  所有的大小写字母
+    # string.digits 0-9 数字
+    @staticmethod
+    def generateSalt(length=16):
+        keyList = [ random.choice(( string.ascii_letters + string.digits )) for i in range(length) ]
+
+        return ("".join(keyList))
