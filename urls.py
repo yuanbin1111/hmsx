@@ -2,7 +2,7 @@ from web.controllers.user.User import router_user
 from application import app
 from web.controllers.index import router_index
 from web.controllers.account.Account import router_account
-# from web.controllers.static import router_static
+# from web.controllers. import router_static
 
 #拦截器的路由
 from web.interceptors.AuthInterceptor import *

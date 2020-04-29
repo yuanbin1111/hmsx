@@ -8,8 +8,9 @@
                 <div class="form-group">
                     <select name="status" class="form-control inline">
                         <option value="-1">请选择状态</option>
-                        <option value="0">已删除</option>
-                        <option value="1">正常</option>
+                        {% for status_key in status %}
+                            <option value="{{ status_key }}">{{ status[status_key] }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -80,6 +81,7 @@
             </tbody>
         </table>
         <!--分页代码已被封装到统一模板文件中-->
+        {% include "common/pagenation.html" %}
     </div>
 </div>
 {% endblock %}

@@ -4,6 +4,9 @@ var account_index_ops = {
         this.eventBind()
     },
     eventBind:function(){
+        $('.wrap_search .search').click(function(){
+            $('.wrap_search').submit()
+        })
         var that = this;
         $(".remove").click(function(){
             id = $(this).attr("data")
