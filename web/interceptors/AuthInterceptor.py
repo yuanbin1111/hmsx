@@ -7,6 +7,7 @@ from application import app
 
 
 import re
+
 #每次请求之前都要先经过这里
 @app.before_request
 def before_request():
